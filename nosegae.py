@@ -151,6 +151,13 @@ class NoseGAE(Plugin):
             the_test = the_test.test
         the_test.testbed = self.testbed
 
+
+        # Allow CUSTOM_APP_ID to change the appengine app id
+        if hasattr(the_test, 'CUSTOM_APP_ID'):
+            self.testbed.setup_env(
+                overwrite=True, app_id=the_test.CUSTOM_APP_ID
+            )
+
         for stub_name, stub_init in testbed.INIT_STUB_METHOD_NAMES.iteritems():
             if not getattr(the_test, 'nosegae_%s' % stub_name, False):
                 continue
@@ -164,6 +171,7 @@ class NoseGAE(Plugin):
                 self._init_datastore_v3_stub(**stub_kwargs)
             elif stub_name == testbed.USER_SERVICE_NAME:
                 self._init_user_stub(**stub_kwargs)
+
             elif stub_name == testbed.MODULES_SERVICE_NAME:
                 self._init_modules_stub(**stub_kwargs)
             else:
